@@ -109,18 +109,35 @@ def calculate_risk_factors(input_data: np.ndarray) -> Dict[str, Any]:
         logger.error(f"Error calculating risk factors: {str(e)}")
         return {}
 
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    """Health check endpoint"""
+    try:
+        if model is None:
+            load_model()
+            if model is None:
+                return jsonify({
+                    'status': 'error',
+                    'message': 'Model not loaded'
+                }), 500
+        return jsonify({
+            'status': 'ok',
+            'model_loaded': model is not None,
+            'scaler_loaded': scaler is not None
+        })
+    except Exception as e:
+        logger.error(f"Health check error: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': str(e)
+        }), 500
+
 @app.route('/api/predict', methods=['POST'])
 def predict():
     """Endpoint to make predictions"""
     global model, scaler
     
     try:
-        # Ensure model is loaded
-        if model is None:
-            load_model()
-            if model is None:
-                return jsonify({'error': 'Model not loaded'}), 500
-
         # Get input data
         data = request.json.get('data')
         if not data:
@@ -128,6 +145,12 @@ def predict():
 
         # Convert to numpy array
         input_data = np.array([data])
+
+        # Load model if not loaded
+        if model is None:
+            load_model()
+            if model is None:
+                return jsonify({'error': 'Model not loaded'}), 500
 
         # Scale the input data
         if scaler is None:
