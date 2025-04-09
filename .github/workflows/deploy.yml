@@ -1,4 +1,4 @@
-name: Build and Push Code
+name: Build Code
 
 on:
   push:
