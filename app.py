@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import pickle
 import os
 from werkzeug.utils import secure_filename
@@ -8,6 +9,7 @@ from typing import Any, Dict
 from sklearn.preprocessing import StandardScaler
 
 app = Flask(__name__)
+CORS(app, resources={r"/api/*": {"origins": ["http://localhost:8090", "http://127.0.0.1:8090"]}})
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

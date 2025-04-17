@@ -35,7 +35,8 @@ test_profiles = [
     }
 ]
 
-base_url = 'http://localhost:5000/api/predict'
+# base_url = 'http://localhost:5000/api/predict'
+base_url = 'https://credit-risk-backend.azurewebsites.net/api/predict'
 
 print("Testing different customer profiles:")
 print("-" * 50)
